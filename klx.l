@@ -1,3 +1,7 @@
+%{
+extern int yylval;
+%}
+
 %option noyywrap
 
 %x COMMENT
@@ -9,21 +13,24 @@
 <COMMENT>\*\/     BEGIN(INITIAL);
 \/\/.*\n          ;
 
-red               return 6;
-orange            return 7;
-yellow            return 8;
-green             return 9;
-blue              return 10;
-purple            return 11;
+red               return 1;
+orange            return 2;
+yellow            return 3;
+green             return 4;
+blue              return 5;
+purple            return 6;
 
-square            return 1;
-triangle          return 3;
-circle            return 4;
-diamond           return 5;
-,                 return 2;
+square            return 7;
+triangle          return 8;
+circle            return 9;
+diamond           return 10;
+
+at                return 11;
+[0-9]*            yylval = atoi(yytext); return 12;
+
+\.                return 13;
 
 [[:space:]]       ;
 .                 fprintf(stderr, "Unexpected symbol\n");
-
 
 %%
