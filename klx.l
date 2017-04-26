@@ -28,7 +28,18 @@ diamond           return 10;
 at                return 11;
 [0-9]*            yylval = atoi(yytext); return 12;
 
-\.                return 13;
+;                 return 13;
+
+\+                return 14;
+\*                return 15;
+\(                return 16;
+\)                return 17;
+
+\-                return 18;
+\/                return 19;
+\^                return 20;
+\%                return 21;
+,                 return 22;
 
 [[:space:]]       ;
 .                 fprintf(stderr, "Unexpected symbol\n");

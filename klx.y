@@ -26,6 +26,16 @@ void set_color(float r, float g, float b) {
 
 %token PERIOD 13
 
+%token PLUS 14;
+%token MULT 15;
+%token OPAREN 16;
+%token CPAREN 17;
+%token SUBTRACT 18;
+%token DIVIDE 19;
+%token EXPONENT 20;
+%token MOD 21;
+%token COMMA 22;
+
 %error-verbose
 
 %%
@@ -48,9 +58,9 @@ shape: color geometry location PERIOD {
           "grestore\n\n");
 };
 
-location: AT NUMBER NUMBER {
+location: AT OPAREN expr COMMA expr CPAREN {
    printf("gsave\n"
-          "%d %d translate\n", $2, $3);
+          "translate\n");
 };
 
 color: RED {
@@ -84,6 +94,35 @@ geometry: CIRCLE {
 geometry: DIAMOND {
    printf("/klx_geom { newpath 5 0 moveto 0 5 lineto 5 10 lineto 10 5 lineto closepath fill } def\n");
 };
+
+expr: expr PLUS term {
+   printf("add ");
+};
+expr: expr SUBTRACT term {
+   printf("sub ");
+};
+expr: term;
+term: term EXPONENT prod {
+   printf("exp ");
+};
+term: prod;
+prod: prod MULT atom {
+   printf("mul ");
+};
+prod: prod DIVIDE atom {
+   printf("div ");
+};
+prod: prod MOD atom {
+   printf("mod ");
+};
+prod: atom;
+atom: SUBTRACT atom {
+   printf("-1 mul ");
+};
+atom: NUMBER {
+   printf("%d ", $1);
+};
+atom: OPAREN expr CPAREN;
 
 %%
 
