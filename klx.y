@@ -9,32 +9,19 @@ void set_color(float r, float g, float b) {
 
 %}
 
-%token RED 1
-%token ORANGE 2
-%token YELLOW 3
-%token GREEN 4
-%token BLUE 5
-%token PURPLE 6
+%token RED ORANGE YELLOW GREEN BLUE PURPLE
+%token SQUARE TRIANGLE CIRCLE DIAMOND
 
-%token SQUARE 7
-%token TRIANGLE 8
-%token CIRCLE 9
-%token DIAMOND 10
+%token AT
+%token NUMBER
 
-%token AT 11
-%token NUMBER 12
+%token SEMICOLON
 
-%token PERIOD 13
-
-%token PLUS 14;
-%token MULT 15;
-%token OPAREN 16;
-%token CPAREN 17;
-%token SUBTRACT 18;
-%token DIVIDE 19;
-%token EXPONENT 20;
-%token MOD 21;
-%token COMMA 22;
+%token EXPONENT
+%token MULT DIVIDE MOD
+%token PLUS SUBTRACT
+%token OPAREN CPAREN
+%token COMMA
 
 %error-verbose
 
@@ -53,7 +40,7 @@ trailer: {
 shape_list: shape;
 shape_list: shape shape_list;
 
-shape: color geometry location PERIOD {
+shape: color geometry location SEMICOLON {
    printf("klx_geom\n"
           "grestore\n\n");
 };
@@ -119,6 +106,9 @@ prod: atom;
 atom: SUBTRACT atom {
    printf("-1 mul ");
 };
+atom: PLUS atom {
+
+};
 atom: NUMBER {
    printf("%d ", $1);
 };
@@ -132,6 +122,7 @@ int yyerror(const char *msg) {
 }
 
 int main(void) {
+   // yydebug =1;
    yyparse();
    return 0;
 }

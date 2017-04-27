@@ -1,2 +1,5 @@
 *.c
+*.h
 *.ps
+klx
+klx.output
