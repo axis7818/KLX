@@ -1,5 +1,6 @@
-*.c
-*.h
 *.ps
 klx
 klx.output
+
+*.tab.*
+*.yy.*

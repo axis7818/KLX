@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "symtab.h"
 int yylex();
 int yyerror(const char *msg);
 
@@ -13,7 +14,7 @@ void set_color(float r, float g, float b) {
 %token SQUARE TRIANGLE CIRCLE DIAMOND
 
 %token AT
-%token NUMBER
+%token <i> NUMBER
 
 %token SEMICOLON
 
@@ -23,11 +24,16 @@ void set_color(float r, float g, float b) {
 %token OPAREN CPAREN
 %token COMMA
 
+%token EQUAL
+%token <n> ID
+
+%union { node *n; int i; double d; }
+
 %error-verbose
 
 %%
 
-program: header shape_list trailer;
+program: header commands trailer;
 header: {
    printf("%%!PS\n\n"
           "%%%% Cameron Taylor\n"
@@ -37,11 +43,14 @@ trailer: {
    printf("\n%%END\n");
 };
 
-shape_list: shape;
-shape_list: shape shape_list;
+commands: ;
+commands: command SEMICOLON commands;
 
-shape: color geometry location SEMICOLON {
-   printf("klx_geom\n"
+command: ID EQUAL expr {
+   printf("/klx_%s exch def\n", $1->symbol);
+};
+command: color geometry location {
+   printf("klx_func_geom\n"
           "grestore\n\n");
 };
 
@@ -62,24 +71,23 @@ color: YELLOW {
 color: GREEN {
    set_color(0.0f, 1.0f, 0.0f);
 };
-color: BLUE {
-   set_color(0.0f, 0.0f, 1.0f);
+color: BLUE { set_color(0.0f, 0.0f, 1.0f);
 };
 color: PURPLE {
    set_color(0.5f, 0.0f, 1.0f);
 };
 
 geometry: SQUARE {
-   printf("/klx_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto 10 0 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto 10 0 lineto closepath fill } def\n");
 };
 geometry: TRIANGLE {
-   printf("/klx_geom { newpath 0 0 moveto 10 0 lineto 5 10 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 0 0 moveto 10 0 lineto 5 10 lineto closepath fill } def\n");
 };
 geometry: CIRCLE {
-   printf("/klx_geom { 5 5 5 0 360 arc closepath fill } def\n");
+   printf("/klx_func_geom { 5 5 5 0 360 arc closepath fill } def\n");
 };
 geometry: DIAMOND {
-   printf("/klx_geom { newpath 5 0 moveto 0 5 lineto 5 10 lineto 10 5 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 5 0 moveto 0 5 lineto 5 10 lineto 10 5 lineto closepath fill } def\n");
 };
 
 expr: expr PLUS term {
@@ -89,29 +97,34 @@ expr: expr SUBTRACT term {
    printf("sub ");
 };
 expr: term;
-term: term EXPONENT prod {
+
+term: prod EXPONENT term {
    printf("exp ");
 };
 term: prod;
-prod: prod MULT atom {
+
+prod: prod MULT unary {
    printf("mul ");
 };
-prod: prod DIVIDE atom {
+prod: prod DIVIDE unary {
    printf("div ");
 };
-prod: prod MOD atom {
+prod: prod MOD unary {
    printf("mod ");
 };
-prod: atom;
-atom: SUBTRACT atom {
-   printf("-1 mul ");
-};
-atom: PLUS atom {
+prod: unary;
 
+unary: SUBTRACT atom {
+   printf("neg ");
+   // printf("-1 mul ");
 };
+unary: PLUS atom;
+unary: atom;
+
 atom: NUMBER {
    printf("%d ", $1);
 };
+atom: ID {printf("klx_%s ", $1->symbol);};
 atom: OPAREN expr CPAREN;
 
 %%

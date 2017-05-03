@@ -1,4 +1,5 @@
 %{
+#include "symtab.h"
 #include "klx.tab.h"
 %}
 
@@ -13,20 +14,20 @@
 <COMMENT>\*\/     BEGIN(INITIAL);
 \/\/.*\n          ;
 
-red               return RED;
-orange            return ORANGE;
-yellow            return YELLOW;
-green             return GREEN;
-blue              return BLUE;
-purple            return PURPLE;
+Red               return RED;
+Orange            return ORANGE;
+Yellow            return YELLOW;
+Green             return GREEN;
+Blue              return BLUE;
+Purple            return PURPLE;
 
-square            return SQUARE;
-triangle          return TRIANGLE;
-circle            return CIRCLE;
-diamond           return DIAMOND;
+Square            return SQUARE;
+Triangle          return TRIANGLE;
+Circle            return CIRCLE;
+Diamond           return DIAMOND;
 
-at                return AT;
-[0-9]*            yylval = atoi(yytext); return NUMBER;
+At                return AT;
+[0-9]*            yylval.i = atoi(yytext); return NUMBER;
 
 ;                 return SEMICOLON;
 
@@ -40,6 +41,13 @@ at                return AT;
 \^                return EXPONENT;
 \%                return MOD;
 ,                 return COMMA;
+
+=                 return EQUAL;
+[a-z]+            {
+                     yylval.n=lookup(yytext); 
+                     if (yylval.n == NULL) yylval.n=insert(yytext);
+                     return ID;
+                  }
 
 [[:space:]]       ;
 .                 fprintf(stderr, "Unexpected symbol\n");
