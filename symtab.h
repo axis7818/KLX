@@ -6,8 +6,8 @@ typedef struct node {
   struct node *next;
   char *symbol;
   int level;
-  /* may be other stuff */
-  
+
+  int defined; 
 }  node;
 
 extern node *insert(char *s);

@@ -1,5 +1,11 @@
 Yellow Circle At (2*2^2, 0);
 Red Square At (16, 10);
 
-Yellow Diamond At (2^3^2, 20);
-Red Square At(512, 30);
+x := 2^3^2;
+Yellow Diamond At (x, 20);
+
+add := 500 + 12;
+Red Square At(add, 30);
+
+double := 12.34;
+Purple Triangle At (double, 2 * double);

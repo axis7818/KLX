@@ -2,5 +2,7 @@
 klx
 klx.output
 
+output/
+
 *.tab.*
 *.yy.*

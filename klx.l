@@ -27,7 +27,14 @@ Circle            return CIRCLE;
 Diamond           return DIAMOND;
 
 At                return AT;
-[0-9]*            yylval.i = atoi(yytext); return NUMBER;
+[0-9]*            {
+                     yylval.i = atoi(yytext); 
+                     return NUMBER;
+                  }
+[0-9]+\.[0-9]*    {
+                     yylval.d = atof(yytext);
+                     return DOUBLE;
+                  }
 
 ;                 return SEMICOLON;
 
@@ -42,10 +49,13 @@ At                return AT;
 \%                return MOD;
 ,                 return COMMA;
 
+:=                return COLEQUAL;
 =                 return EQUAL;
 [a-z]+            {
-                     yylval.n=lookup(yytext); 
-                     if (yylval.n == NULL) yylval.n=insert(yytext);
+                     // put the symbol in the lookup table
+                     yylval.n = lookup(yytext); 
+                     if (yylval.n == NULL) 
+                        yylval.n = insert(yytext);
                      return ID;
                   }
 

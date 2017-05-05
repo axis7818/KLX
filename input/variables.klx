@@ -1,0 +1,13 @@
+
+x := 50;
+y := 0;
+z := 50;
+add := 40;
+double := 10.34;
+
+Yellow Diamond At (x, y);
+Red Square At (x, 10);
+Green Circle At (z, 20);
+Purple Triangle At (add, 40);
+
+Blue Circle At (double, double);

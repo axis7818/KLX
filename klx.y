@@ -15,6 +15,7 @@ void set_color(float r, float g, float b) {
 
 %token AT
 %token <i> NUMBER
+%token <d> DOUBLE
 
 %token SEMICOLON
 
@@ -24,6 +25,7 @@ void set_color(float r, float g, float b) {
 %token OPAREN CPAREN
 %token COMMA
 
+%token COLEQUAL
 %token EQUAL
 %token <n> ID
 
@@ -46,8 +48,17 @@ trailer: {
 commands: ;
 commands: command SEMICOLON commands;
 
-command: ID EQUAL expr {
+command: ID COLEQUAL expr {
+   $1->defined = 1;
    printf("/klx_%s exch def\n", $1->symbol);
+}
+command: ID EQUAL expr {
+   // set a variable that has been declared
+   if (!$1->defined) {
+      yyerror("undefined symbol, consider := declaration");
+   } else {
+      printf("/klx_%s exch def\n", $1->symbol);
+   }
 };
 command: color geometry location {
    printf("klx_func_geom\n"
@@ -78,16 +89,19 @@ color: PURPLE {
 };
 
 geometry: SQUARE {
-   printf("/klx_func_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto 10 0 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto "
+          "10 0 lineto closepath fill } def\n");
 };
 geometry: TRIANGLE {
-   printf("/klx_func_geom { newpath 0 0 moveto 10 0 lineto 5 10 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 0 0 moveto 10 0 lineto 5 10 lineto "
+          "closepath fill } def\n");
 };
 geometry: CIRCLE {
    printf("/klx_func_geom { 5 5 5 0 360 arc closepath fill } def\n");
 };
 geometry: DIAMOND {
-   printf("/klx_func_geom { newpath 5 0 moveto 0 5 lineto 5 10 lineto 10 5 lineto closepath fill } def\n");
+   printf("/klx_func_geom { newpath 5 0 moveto 0 5 lineto 5 10 lineto 10 5 "
+          "lineto closepath fill } def\n");
 };
 
 expr: expr PLUS term {
@@ -98,8 +112,7 @@ expr: expr SUBTRACT term {
 };
 expr: term;
 
-term: prod EXPONENT term {
-   printf("exp ");
+term: prod EXPONENT term { printf("exp ");
 };
 term: prod;
 
@@ -124,7 +137,16 @@ unary: atom;
 atom: NUMBER {
    printf("%d ", $1);
 };
-atom: ID {printf("klx_%s ", $1->symbol);};
+atom: DOUBLE {
+   printf("%f ", $1);
+};
+atom: ID {
+   if (!$1->defined) {
+      yyerror("undefined symbol detected");
+   } else {
+      printf("klx_%s ", $1->symbol);
+   }
+};
 atom: OPAREN expr CPAREN;
 
 %%
