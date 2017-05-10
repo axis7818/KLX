@@ -19,6 +19,11 @@ void set_color(float r, float g, float b) {
 
 %token SEMICOLON
 
+%token IF ELSE ENDIF
+%token WHILE ENDWHILE
+
+%token GT LT EQ GE LE NE
+
 %token EXPONENT
 %token MULT DIVIDE MOD
 %token PLUS SUBTRACT
@@ -48,6 +53,27 @@ trailer: {
 commands: ;
 commands: command SEMICOLON commands;
 
+code_start: {
+   printf("{\n");
+};
+
+command: IF bool code_start commands {
+   printf("} if\n");
+} ENDIF;
+command: IF bool code_start commands {
+   printf("} {\n");
+} ELSE commands {
+   printf("} ifelse\n");
+} ENDIF;
+
+command: WHILE {
+   printf("{ ");
+} bool {
+   printf(" not { exit } if\n");
+} commands {
+   printf("} loop\n");
+} ENDWHILE;
+
 command: ID COLEQUAL expr {
    $1->defined = 1;
    printf("/klx_%s exch def\n", $1->symbol);
@@ -62,7 +88,7 @@ command: ID EQUAL expr {
 };
 command: color geometry location {
    printf("klx_func_geom\n"
-          "grestore\n\n");
+          "grestore\n");
 };
 
 location: AT OPAREN expr COMMA expr CPAREN {
@@ -70,23 +96,12 @@ location: AT OPAREN expr COMMA expr CPAREN {
           "translate\n");
 };
 
-color: RED {
-   set_color(1.0f, 0.0f, 0.0f);
-};
-color: ORANGE {
-   set_color(1.0f, 0.5f, 0.0f);
-};
-color: YELLOW {
-   set_color(1.0f, 1.0f, 0.0f);
-};
-color: GREEN {
-   set_color(0.0f, 1.0f, 0.0f);
-};
-color: BLUE { set_color(0.0f, 0.0f, 1.0f);
-};
-color: PURPLE {
-   set_color(0.5f, 0.0f, 1.0f);
-};
+color: RED { set_color(1.0f, 0.0f, 0.0f); };
+color: ORANGE { set_color(1.0f, 0.5f, 0.0f); };
+color: YELLOW { set_color(1.0f, 1.0f, 0.0f); };
+color: GREEN { set_color(0.0f, 1.0f, 0.0f); };
+color: BLUE { set_color(0.0f, 0.0f, 1.0f); };
+color: PURPLE { set_color(0.5f, 0.0f, 1.0f); };
 
 geometry: SQUARE {
    printf("/klx_func_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto "
@@ -104,42 +119,31 @@ geometry: DIAMOND {
           "lineto closepath fill } def\n");
 };
 
-expr: expr PLUS term {
-   printf("add ");
-};
-expr: expr SUBTRACT term {
-   printf("sub ");
-};
+bool: expr GT expr { printf("gt "); };
+bool: expr LT expr { printf("lt "); };
+bool: expr EQ expr { printf("eq "); };
+bool: expr GE expr { printf("ge "); };
+bool: expr LE expr { printf("le "); };
+bool: expr NE expr { printf("ne "); };
+
+expr: expr PLUS term { printf("add "); };
+expr: expr SUBTRACT term { printf("sub "); };
 expr: term;
 
-term: prod EXPONENT term { printf("exp ");
-};
+term: prod EXPONENT term { printf("exp "); };
 term: prod;
 
-prod: prod MULT unary {
-   printf("mul ");
-};
-prod: prod DIVIDE unary {
-   printf("div ");
-};
-prod: prod MOD unary {
-   printf("mod ");
-};
+prod: prod MULT unary { printf("mul "); };
+prod: prod DIVIDE unary { printf("div "); };
+prod: prod MOD unary { printf("mod "); };
 prod: unary;
 
-unary: SUBTRACT atom {
-   printf("neg ");
-   // printf("-1 mul ");
-};
+unary: SUBTRACT atom { printf("neg "); };
 unary: PLUS atom;
 unary: atom;
 
-atom: NUMBER {
-   printf("%d ", $1);
-};
-atom: DOUBLE {
-   printf("%f ", $1);
-};
+atom: NUMBER { printf("%d ", $1); };
+atom: DOUBLE { printf("%f ", $1); };
 atom: ID {
    if (!$1->defined) {
       yyerror("undefined symbol detected");

@@ -1,5 +1,5 @@
 
-all: klx first
+all: klx first 
 
 lex.yy.c: klx.l
 	flex klx.l
@@ -23,4 +23,7 @@ variables: klx input/variables.klx
 
 bad: klx input/bad.klx
 	./klx < input/bad.klx > bad.ps
+
+# control: klx input/control.klx
+#    ./klx < input/control.klx > control.ps
 

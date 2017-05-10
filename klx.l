@@ -38,6 +38,13 @@ At                return AT;
 
 ;                 return SEMICOLON;
 
+\>                return GT;
+\>=               return GE;
+\<=               return LE;
+\<                return LT;
+==                return EQ;
+!=                return NE;
+
 \+                return PLUS;
 \*                return MULT;
 \(                return OPAREN;
@@ -58,6 +65,12 @@ At                return AT;
                         yylval.n = insert(yytext);
                      return ID;
                   }
+
+If                return IF;
+Else              return ELSE;
+Endif             return ENDIF;
+While             return WHILE;
+Endwhile          return ENDWHILE;
 
 [[:space:]]       ;
 .                 fprintf(stderr, "Unexpected symbol\n");
