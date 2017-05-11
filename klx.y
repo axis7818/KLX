@@ -19,7 +19,7 @@ void set_color(float r, float g, float b) {
 
 %token SEMICOLON
 
-%token IF ELSE ENDIF
+%token IF ELSEIF ELSE ENDIF
 %token WHILE ENDWHILE
 
 %token GT LT EQ GE LE NE
@@ -60,6 +60,7 @@ code_start: {
 command: IF bool code_start commands {
    printf("} if\n");
 } ENDIF;
+
 command: IF bool code_start commands {
    printf("} {\n");
 } ELSE commands {

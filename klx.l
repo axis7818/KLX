@@ -68,6 +68,7 @@ At                return AT;
 
 If                return IF;
 Else              return ELSE;
+Elseif            return ELSEIF;
 Endif             return ENDIF;
 While             return WHILE;
 Endwhile          return ENDWHILE;
