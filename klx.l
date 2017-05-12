@@ -28,7 +28,7 @@ Diamond           return DIAMOND;
 
 At                return AT;
 [0-9]*            {
-                     yylval.i = atoi(yytext); 
+                     yylval.i = atoi(yytext);
                      return NUMBER;
                   }
 [0-9]+\.[0-9]*    {
@@ -44,6 +44,11 @@ At                return AT;
 \<                return LT;
 ==                return EQ;
 !=                return NE;
+Not               return NOT;
+And               return AND;
+Or                return OR;
+True              return TRUE;
+False             return FALSE;
 
 \+                return PLUS;
 \*                return MULT;
@@ -60,8 +65,8 @@ At                return AT;
 =                 return EQUAL;
 [a-z]+            {
                      // put the symbol in the lookup table
-                     yylval.n = lookup(yytext); 
-                     if (yylval.n == NULL) 
+                     yylval.n = lookup(yytext);
+                     if (yylval.n == NULL)
                         yylval.n = insert(yytext);
                      return ID;
                   }

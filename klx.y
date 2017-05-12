@@ -22,7 +22,9 @@ void set_color(float r, float g, float b) {
 %token IF ELSEIF ELSE ENDIF
 %token WHILE ENDWHILE
 
+%token TRUE FALSE
 %token GT LT EQ GE LE NE
+%token NOT AND OR
 
 %token EXPONENT
 %token MULT DIVIDE MOD
@@ -57,23 +59,18 @@ code_start: {
    printf("{\n");
 };
 
-command: IF bool code_start commands {
+command: IF boolexpr code_start commands {
    printf("} if\n");
 } ENDIF;
 
-command: IF bool code_start commands {
+command: IF boolexpr code_start commands {
    printf("} {\n");
 } ELSE commands {
    printf("} ifelse\n");
 } ENDIF;
 
-command: WHILE {
-   printf("{ ");
-} bool {
-   printf(" not { exit } if\n");
-} commands {
-   printf("} loop\n");
-} ENDWHILE;
+command: WHILE { printf("{ "); } boolexpr { printf("not { exit } if\n"); }
+         commands { printf("} loop\n"); } ENDWHILE;
 
 command: ID COLEQUAL expr {
    $1->defined = 1;
@@ -120,12 +117,22 @@ geometry: DIAMOND {
           "lineto closepath fill } def\n");
 };
 
-bool: expr GT expr { printf("gt "); };
-bool: expr LT expr { printf("lt "); };
-bool: expr EQ expr { printf("eq "); };
-bool: expr GE expr { printf("ge "); };
-bool: expr LE expr { printf("le "); };
-bool: expr NE expr { printf("ne "); };
+boolexpr: boolexpr OR boolands { printf("or "); };
+boolexpr: boolands;
+boolands: boolands AND boolunary { printf("and "); };
+boolands: boolunary;
+boolunary: NOT boolatom { printf("not "); };
+boolunary: boolatom;
+
+boolatom: expr GT expr { printf("gt "); };
+boolatom: expr LT expr { printf("lt "); };
+boolatom: expr EQ expr { printf("eq "); };
+boolatom: expr GE expr { printf("ge "); };
+boolatom: expr LE expr { printf("le "); };
+boolatom: expr NE expr { printf("ne "); };
+boolatom: OPAREN boolexpr CPAREN;
+boolatom: TRUE { printf("true "); };
+boolatom: FALSE { printf("false "); };
 
 expr: expr PLUS term { printf("add "); };
 expr: expr SUBTRACT term { printf("sub "); };

@@ -1,6 +1,0 @@
-x := 7;
-While x > 0
-   Blue Circle At (100, 100 - 10 * x);
-   x = x - 1;
-Endwhile;
-
