@@ -1,5 +1,5 @@
 
-all: klx
+all: klx control
 
 lex.yy.c: klx.l
 	flex klx.l
@@ -17,3 +17,6 @@ clean:
 
 variables: klx variables.klx
 	./klx < variables.klx > variables.ps
+
+control: klx control.klx
+	./klx < control.klx > control.ps
