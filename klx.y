@@ -56,32 +56,57 @@ commands: ;
 commands: command SEMICOLON commands;
 
 code_start: {
-   printf("{\n");
+   scope_open();
+   printf("{ 4 dict begin\n");
 };
 
 command: IF boolexpr code_start commands {
-   printf("} if\n");
-} ENDIF;
+   printf("} if end\n");
+} ENDIF {
+   scope_close();
+};
 
 command: IF boolexpr code_start commands {
-   printf("} {\n");
+   scope_close();
+   scope_open();
+   printf(" end } { 4 dict begin \n");
 } ELSE commands {
-   printf("} ifelse\n");
+   printf(" end } ifelse\n");
+   scope_close();
 } ENDIF;
 
-command: WHILE { printf("{ "); } boolexpr { printf("not { exit } if\n"); }
-         commands { printf("} loop\n"); } ENDWHILE;
+command: WHILE {
+   scope_open();
+   printf("{ ");
+} boolexpr {
+   printf("not { exit } if 4 dict begin\n");
+} commands {
+   printf("end } loop\n");
+   scope_close();
+} ENDWHILE;
 
 command: ID COLEQUAL expr {
-   $1->defined = 1;
-   printf("/klx_%s exch def\n", $1->symbol);
+   if ($1->defined) {
+     if ($1->level == level) {
+       yyerror("redefinition of variable");
+     } else {
+       node *newN = insert($1->symbol);
+       newN->defined = 1;
+       newN->level = level;
+       printf("/klx_%s exch def\n", newN->symbol);
+     }
+   } else {
+     $1->defined = 1;
+     $1->level = level;
+     printf("/klx_%s exch def\n", $1->symbol);
+   }
 }
 command: ID EQUAL expr {
    // set a variable that has been declared
    if (!$1->defined) {
       yyerror("undefined symbol, consider := declaration");
    } else {
-      printf("/klx_%s exch def\n", $1->symbol);
+      printf("/klx_%s exch store\n", $1->symbol);
    }
 };
 command: color geometry location {
@@ -154,6 +179,7 @@ atom: NUMBER { printf("%d ", $1); };
 atom: DOUBLE { printf("%f ", $1); };
 atom: ID {
    if (!$1->defined) {
+      printf("SYMBOL: %s, LEVEL: %d\n", $1->symbol, $1->level);
       yyerror("undefined symbol detected");
    } else {
       printf("klx_%s ", $1->symbol);

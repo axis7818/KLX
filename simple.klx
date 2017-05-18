@@ -1,0 +1,9 @@
+
+x := 1;
+
+If x == 1
+  // x := 0;
+  Orange Diamond At (0, 0);
+Endif;
+
+Green Triangle At (10 * x, 10 * x);

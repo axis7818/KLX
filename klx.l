@@ -66,8 +66,9 @@ False             return FALSE;
 [a-z]+            {
                      // put the symbol in the lookup table
                      yylval.n = lookup(yytext);
-                     if (yylval.n == NULL)
+                     if (yylval.n == NULL) {
                         yylval.n = insert(yytext);
+                     }
                      return ID;
                   }
 
