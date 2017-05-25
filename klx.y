@@ -13,7 +13,7 @@ void set_color(float r, float g, float b) {
 %token RED ORANGE YELLOW GREEN BLUE PURPLE
 %token SQUARE TRIANGLE CIRCLE DIAMOND
 
-%token AT
+%token ANCHOR AT
 %token <i> NUMBER
 %token <d> DOUBLE
 
@@ -42,7 +42,9 @@ void set_color(float r, float g, float b) {
 
 %%
 
-program: header commands trailer;
+program: header {
+  printf("gsave\n");
+} commands trailer;
 header: {
    printf("%%!PS\n\n"
           "%%%% Cameron Taylor\n"
@@ -109,6 +111,11 @@ command: ID EQUAL expr {
       printf("/klx_%s exch store\n", $1->symbol);
    }
 };
+
+command: ANCHOR {
+  printf("grestore\n");
+} location;
+
 command: color geometry location {
    printf("klx_func_geom\n"
           "grestore\n");
@@ -118,6 +125,8 @@ location: AT OPAREN expr COMMA expr CPAREN {
    printf("gsave\n"
           "translate\n");
 };
+
+
 
 color: RED { set_color(1.0f, 0.0f, 0.0f); };
 color: ORANGE { set_color(1.0f, 0.5f, 0.0f); };

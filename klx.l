@@ -26,6 +26,8 @@ Triangle          return TRIANGLE;
 Circle            return CIRCLE;
 Diamond           return DIAMOND;
 
+Anchor            return ANCHOR;
+
 At                return AT;
 [0-9]*            {
                      yylval.i = atoi(yytext);

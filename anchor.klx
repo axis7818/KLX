@@ -1,0 +1,16 @@
+zero := 0;
+pos := 0;
+count := 0;
+
+While count < 10
+
+  Anchor At (pos, pos);
+  Red Square At (zero, zero);
+
+  pos = pos + 10;
+  count = count + 1;
+
+Endwhile;
+
+Anchor At (zero, zero);
+Green Circle At (0, 0);

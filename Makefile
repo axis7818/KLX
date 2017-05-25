@@ -1,5 +1,5 @@
 
-all: klx scope
+all: klx anchor
 
 lex.yy.c: klx.l
 	flex klx.l
@@ -18,5 +18,6 @@ clean:
 variables: klx variables.klx
 	./klx < variables.klx > variables.ps
 
-scope: klx scope.klx
-	./klx < scope.klx > scope.ps
+anchor: klx anchor.klx
+	./klx < anchor.klx > anchor.ps
+	ps2pdf anchor.ps
