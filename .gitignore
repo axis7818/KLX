@@ -7,3 +7,6 @@ output/
 
 *.tab.*
 *.yy.*
+
+.DS_Store
+.DS_Store/
