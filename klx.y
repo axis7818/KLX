@@ -21,6 +21,7 @@ void set_color(float r, float g, float b) {
 
 %token IF ELSEIF ELSE ENDIF
 %token WHILE ENDWHILE
+%token PROC ENDPROC
 
 %token TRUE FALSE
 %token GT LT EQ GE LE NE
@@ -30,6 +31,7 @@ void set_color(float r, float g, float b) {
 %token MULT DIVIDE MOD
 %token PLUS SUBTRACT
 %token OPAREN CPAREN
+%token OBRAC CBRAC
 %token COMMA
 
 %token COLEQUAL
@@ -112,6 +114,55 @@ command: ID EQUAL expr {
    }
 };
 
+command: ID COLEQUAL PROC {
+  scope_open();
+  printf("/klx_%s { 4 dict begin \n", $1->symbol);
+} OBRAC param_list CBRAC commands {
+  printf("end } def\n");
+  scope_close();
+
+  if ($1->defined) {
+    if ($1->level == level) {
+      yyerror("redefinition of procedure");
+    } else {
+      node *newN = insert($1->symbol);
+      newN->defined = 1;
+      newN->level = level;
+      newN->is_procedure = 1;
+    }
+  } else {
+    $1->defined = 1;
+    $1->level = level;
+    $1->is_procedure = 1;
+  }
+} ENDPROC;
+
+param_list: ;
+param_list: params;
+params: ID {
+  printf("/klx_%s exch def\n", $1->symbol);
+  $1->defined = 1;
+  $1->level = level;
+};
+params: ID COMMA params {
+  printf("/klx_%s exch def\n", $1->symbol);
+  $1->defined = 1;
+  $1->level = level;
+};
+
+command: ID OBRAC arg_list CBRAC {
+  if (!$1->defined) {
+    yyerror("undefined procedure detected");
+  } else {
+    printf("klx_%s\n", $1->symbol);
+  }
+};
+
+arg_list: ;
+arg_list: args;
+args: expr;
+args: expr COMMA args;
+
 command: ANCHOR {
   printf("grestore\n");
 } location;
@@ -188,7 +239,7 @@ atom: NUMBER { printf("%d ", $1); };
 atom: DOUBLE { printf("%f ", $1); };
 atom: ID {
    if (!$1->defined) {
-      printf("SYMBOL: %s, LEVEL: %d\n", $1->symbol, $1->level);
+      // printf("SYMBOL: %s, LEVEL: %d\n", $1->symbol, $1->level);
       yyerror("undefined symbol detected");
    } else {
       printf("klx_%s ", $1->symbol);

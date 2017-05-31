@@ -1,0 +1,27 @@
+// demonstrates procedures
+
+proc_a := Proc []
+  Blue Circle At (10, 10);
+  Green Square At (20, 10);
+Endproc;
+
+proc_b := Proc [offset]
+  Red Diamond At (-offset, offset);
+  Red Diamond At (-offset, -offset);
+  Red Diamond At (offset, offset);
+  Red Diamond At (offset, -offset);
+Endproc;
+
+proc_c := Proc [x, y]
+  Purple Triangle At (x, y);
+Endproc;
+
+proc_a[];
+
+Anchor At (100, 100);
+proc_b[20];
+Anchor At (200, 300);
+proc_b[10];
+
+Anchor At (0, 0);
+proc_c[50, 20 + 50];

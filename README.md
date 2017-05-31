@@ -27,3 +27,7 @@ In klx.l (need to #include <stdlib> (need to `extern int yylval;`)
 
 In klx.y
 `MOVE NUMBER NUMBER     { printf("%d %d translate\n", $2, $3); };`
+
+---
+
+implement procedures 

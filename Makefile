@@ -1,5 +1,5 @@
 
-all: klx anchor
+all: klx proc
 
 lex.yy.c: klx.l
 	flex klx.l
@@ -18,6 +18,5 @@ clean:
 variables: klx variables.klx
 	./klx < variables.klx > variables.ps
 
-anchor: klx anchor.klx
-	./klx < anchor.klx > anchor.ps
-	ps2pdf anchor.ps
+proc: klx proc.klx
+	./klx < proc.klx > proc.ps

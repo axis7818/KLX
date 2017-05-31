@@ -56,6 +56,8 @@ False             return FALSE;
 \*                return MULT;
 \(                return OPAREN;
 \)                return CPAREN;
+\[                return OBRAC;
+\]                return CBRAC;
 
 \-                return SUBTRACT;
 \/                return DIVIDE;
@@ -65,7 +67,7 @@ False             return FALSE;
 
 :=                return COLEQUAL;
 =                 return EQUAL;
-[a-z]+            {
+[a-z_]+           {
                      // put the symbol in the lookup table
                      yylval.n = lookup(yytext);
                      if (yylval.n == NULL) {
@@ -80,6 +82,8 @@ Elseif            return ELSEIF;
 Endif             return ENDIF;
 While             return WHILE;
 Endwhile          return ENDWHILE;
+Proc              return PROC;
+Endproc           return ENDPROC;
 
 [[:space:]]       ;
 .                 fprintf(stderr, "Unexpected symbol\n");

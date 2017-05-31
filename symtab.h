@@ -1,5 +1,5 @@
 #ifndef SYMTAB_H
-#define SYMTAB_H 
+#define SYMTAB_H
 
 typedef struct node {
   /* required */
@@ -7,7 +7,8 @@ typedef struct node {
   char *symbol;
   int level;
 
-  int defined; 
+  int defined;
+  int is_procedure;
 }  node;
 
 extern node *insert(char *s);
