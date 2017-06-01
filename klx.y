@@ -21,6 +21,11 @@ void set_color(float r, float g, float b) {
 
 %token IF ELSEIF ELSE ENDIF
 %token WHILE ENDWHILE
+
+%type  <i> param_list
+%type  <i> params
+%type  <i> arg_list
+%type  <i> args
 %token PROC ENDPROC
 
 %token TRUE FALSE
@@ -135,19 +140,27 @@ command: ID COLEQUAL PROC {
     $1->level = level;
     $1->is_procedure = 1;
   }
+
+  $1->arg_count = $6;
 } ENDPROC;
 
-param_list: ;
-param_list: params;
+param_list: {
+  $$ = 0;
+};
+param_list: params {
+  $$ = $1;
+};
 params: ID {
   printf("/klx_%s exch def\n", $1->symbol);
   $1->defined = 1;
   $1->level = level;
+  $$ = 1;
 };
 params: ID COMMA params {
   printf("/klx_%s exch def\n", $1->symbol);
   $1->defined = 1;
   $1->level = level;
+  $$ = $3 + 1;
 };
 
 command: ID OBRAC arg_list CBRAC {
@@ -156,12 +169,24 @@ command: ID OBRAC arg_list CBRAC {
   } else {
     printf("klx_%s\n", $1->symbol);
   }
+
+  if ($1->arg_count != $3) {
+    yyerror("incorrect number of arguments!");
+  }
 };
 
-arg_list: ;
-arg_list: args;
-args: expr;
-args: expr COMMA args;
+arg_list: {
+  $$ = 0;
+};
+arg_list: args {
+  $$ = $1;
+};
+args: expr {
+  $$ = 1;
+};
+args: expr COMMA args {
+  $$ = $3 + 1;
+};
 
 command: ANCHOR {
   printf("grestore\n");

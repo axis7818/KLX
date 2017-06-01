@@ -1,0 +1,15 @@
+
+star := Proc [offset]
+  Blue Circle At (-offset, -offset);
+  Blue Circle At (-offset, offset);
+  Blue Circle At (offset, -offset);
+  Blue Circle At (offset, offset);
+Endproc;
+
+Anchor At (200, 200);
+
+size := 10;
+While size < 100
+  star[size];
+  size = size + 10;
+Endwhile;

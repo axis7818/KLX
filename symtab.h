@@ -9,6 +9,7 @@ typedef struct node {
 
   int defined;
   int is_procedure;
+  int arg_count;
 }  node;
 
 extern node *insert(char *s);
