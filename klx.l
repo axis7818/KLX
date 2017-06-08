@@ -20,6 +20,12 @@ Yellow            return YELLOW;
 Green             return GREEN;
 Blue              return BLUE;
 Purple            return PURPLE;
+Brown             return BROWN;
+Lightblue         return LIGHTBLUE;
+Darkgreen         return DARKGREEN;
+Grey              return GREY;
+Black             return BLACK;
+Darkgrey          return DARKGREY;
 
 Square            return SQUARE;
 Triangle          return TRIANGLE;

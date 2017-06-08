@@ -10,7 +10,7 @@ void set_color(float r, float g, float b) {
 
 %}
 
-%token RED ORANGE YELLOW GREEN BLUE PURPLE
+%token RED ORANGE YELLOW GREEN BLUE PURPLE BROWN LIGHTBLUE DARKGREEN GREY BLACK DARKGREY
 %token SQUARE TRIANGLE CIRCLE DIAMOND
 
 %token ANCHOR AT
@@ -210,6 +210,12 @@ color: YELLOW { set_color(1.0f, 1.0f, 0.0f); };
 color: GREEN { set_color(0.0f, 1.0f, 0.0f); };
 color: BLUE { set_color(0.0f, 0.0f, 1.0f); };
 color: PURPLE { set_color(0.5f, 0.0f, 1.0f); };
+color: BROWN { set_color(0.64, 0.42, 0.0); };
+color: LIGHTBLUE { set_color(0.13, 0.93, 0.96); };
+color: DARKGREEN { set_color(0.06, 0.54, 0.0); };
+color: GREY { set_color(0.58, 0.58, 0.58); };
+color: BLACK { set_color(0, 0, 0); };
+color: DARKGREY { set_color(0.45, 0.45, 0.45); };
 
 geometry: SQUARE {
    printf("/klx_func_geom { newpath 0 0 moveto 0 10 lineto 10 10 lineto "

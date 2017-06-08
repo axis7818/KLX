@@ -1,0 +1,147 @@
+min_x := 20;
+max_x := 580;
+min_y := 20;
+max_y := 420;
+
+draw_sky := Proc []
+  x := min_x;
+  y := min_y;
+
+  While y <= max_y
+    While x <= max_x
+      Lightblue Square At (x, y);
+      x = x + 10;
+    Endwhile;
+
+    x = min_x;
+    y = y + 10;
+  Endwhile;
+
+Endproc;
+
+draw_ground := Proc []
+  x := min_x;
+  y := min_y;
+
+  While y <= 0.4 * max_y
+    While x <= max_x
+      Darkgreen Square At (x, y);
+      x = x + 10;
+    Endwhile;
+
+    x = min_x;
+    y = y + 10;
+  Endwhile;
+
+Endproc;
+
+draw_sun := Proc []
+  dx := -16;
+  dy := 0;
+
+  While dx <= 0
+    count := 8;
+
+    While count >= 0
+      Yellow Diamond At (max_x + dx * count, max_y + dy * count);
+
+      count = count - 1;
+    Endwhile;
+
+    dx = dx + 4;
+    dy = dy - 4;
+  Endwhile;
+
+Endproc;
+
+draw_tree := Proc [x, y]
+  Brown Square At (x, y);
+
+  leaf_y := y + 10;
+  level := 1;
+
+  While level <= 3
+    If level == 1
+      Green Triangle At (x - 10, leaf_y);
+      Green Triangle At (x, leaf_y);
+      Green Triangle At (x + 10, leaf_y);
+    Else
+      If level == 2
+        Green Triangle At (x - 5, leaf_y);
+        Green Triangle At (x + 5, leaf_y);
+      Else
+        Green Triangle At (x, leaf_y);
+      Endif;
+    Endif;
+
+    level = level + 1;
+    leaf_y = leaf_y + 10;
+  Endwhile;
+
+Endproc;
+
+draw_forest := Proc []
+  tree_y := 120;
+
+  While tree_y > 20
+    tree_x := min_x + 20;
+    While tree_x < max_x
+      draw_tree[tree_x, tree_y];
+      tree_x = tree_x + 20;
+    Endwhile;
+
+    tree_y = tree_y - 35;
+  Endwhile;
+
+Endproc;
+
+draw_castle_tower := Proc[x, y]
+  height := 12;
+
+  While height > 0
+    Darkgrey Square At (x, 10 * (height - 1) + y);
+    Darkgrey Square At (x + 10, 10 * (height - 1) + y);
+    Darkgrey Square At (x + 20, 10 * (height - 1) + y);
+
+    height = height - 1;
+  Endwhile;
+
+Endproc;
+
+draw_castle := Proc [x, y]
+  height := 10;
+  width := 15;
+
+  While height > 0
+    While width > 0
+      Grey Square At (x + 10 * width, y + 10 * height);
+      width = width - 1;
+    Endwhile;
+    width = 15;
+    height = height - 1;
+  Endwhile;
+
+  Black Square At (x + 150 / 2 - 10, y + 10);
+  Black Square At (x + 150 / 2 - 10, y + 20);
+  Black Circle At (x + 150 / 2 - 10, y + 25);
+  Black Square At (x + 150 / 2, y + 10);
+  Black Square At (x + 150 / 2, y + 20);
+  Black Circle At (x + 150 / 2, y + 25);
+  Black Square At (x + 10 + 150 / 2, y + 10);
+  Black Square At (x + 10 + 150 / 2, y + 20);
+  Black Circle At (x + 10 + 150 / 2, y + 25);
+
+  draw_castle_tower[x - 15, y + 10];
+  draw_castle_tower[x + 135, y + 10];
+
+Endproc;
+
+draw_scene := Proc []
+  draw_sky[];
+  draw_ground[];
+  draw_sun[];
+  draw_castle[200, 0.35 * max_y];
+  draw_forest[];
+Endproc;
+
+draw_scene[];

@@ -1,5 +1,5 @@
 
-all: klx proc
+all: klx final
 
 lex.yy.c: klx.l
 	flex klx.l
@@ -18,5 +18,6 @@ clean:
 variables: klx variables.klx
 	./klx < variables.klx > variables.ps
 
-proc: klx proc.klx
-	./klx < proc.klx > proc.ps
+final: klx final.klx
+	./klx < final.klx > final.ps
+	ps2pdf final.ps
